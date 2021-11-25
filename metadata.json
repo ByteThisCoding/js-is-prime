@@ -1,4 +1,7 @@
 {
+    "categories": [
+        "Algorithms"
+    ],
     "tags": [
         "is prime",
         "javascript is prime",
@@ -7,5 +10,8 @@
         "primality test",
         "prime test",
         "algorithm prime"
+    ],
+    "languages": [
+        "JavaScript"
     ]
 }
