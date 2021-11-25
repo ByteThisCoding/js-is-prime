@@ -5,7 +5,7 @@ An outline of how to determine if a number is prime with increasing levels of ef
 Though most people know what prime numbers are, it may be helpful to have a quick refresher. A **prime number** is a number which is not *divisible* by any integer other than itself and 1. The first few prime numbers are: ``[2, 3, 5, 7, 11, 13, 17]``. Any process which checks if any given number is prime or not is called a **primality test**. There are many ways to check if a number is prime, ranging from simple methods to highly sophisticated methods.
 
 ## Brute Force
-The simplest way to check if a number is prime is to iteratively check every single number from 2 up to the number itself, and for each of those numbers, divide and check if there is a remainder. If any number divides without a remainder, then the input number is not prime. Otherwise, it is prime. An example implementation is:
+The simplest way to check if a number is prime is to iteratively check every single number from 2 up to the number itself, and for each of those numbers, divide and check if there is a remainder. If any number divides without a remainder, then the input number is not prime. Otherwise, it is prime. This is also known as a **modulus operation**: performing a division-like operation but getting the remainder as a result instead of the entire number. An example implementation is:
 ```javascript
 function isPrime(num) {
     //iterate over all numbers 2<=i<n
@@ -27,7 +27,7 @@ If we take this approach, we'll need to perform one modulus operation for each n
 We can reduce the number of steps by roughly half by making an observation on the nature of prime numbers; let's review the list of the first few primes again:
 * ``[2, 3, 5, 7, 11, 13, 17, 19, 23]``.
 
-Notice that 2 is the only item in that list which is an even number. This yields a fundamental property of prime numbers: **all prime numbers are odd (except 2)**. This is because all even numbers are divisible by 2:
+Notice that 2 is the only item in that list which is an even number. This yields a fundamental property of prime numbers: **all prime numbers are odd (except 2)**. This is because all even numbers are divisible by 2. With this in mind, we can do a single check out front to see if the number is divisible by 2, or is 2 itself, and only proceed to the iterative logic if the number is not 2 or even:
 ```javascript
 function isPrime(num) {
     //we can handle this as a special base case
@@ -68,7 +68,7 @@ If we analyze the relationship between a number and its factors, we will be able
 
 Notice that for each pair ``a x b``, ``a <= b``. We could also write the reverse pairs, but those pairs would be redundant. In other words, for each ``a x b`` pair, the pair ``b x a`` also exists. For a concrete example of the number 12: ``1x12 and 12x1, 2x6 and 6x2, 3x4 and 4x3``.
 
-This hints at the fact that there is some type of threshold between 1 and the number we're testing; once we cross that threshold, we'll be performing redundant calculations. For the number 12, that threshold appears to lie somewhere near the number 3 or 4. If we consider the factors of 36, we'll see: ``1x36, 2x18, 3x12, 4x9, and 6x6``, where we have a pair of ``6x6``, which means 36 is a square number. This also means that we've found our threshold value: the **square root** of the number we're testing.
+This hints at the fact that there is some type of threshold between 1 and the number we're testing; once we cross that threshold, we'll be performing redundant calculations. For the number 12, that threshold appears to lie somewhere near the number 3 or 4. If we consider the factors of 36, we'll see: ``1x36, 2x18, 3x12, 4x9, and 6x6``, where we have a pair of ``6x6``. 6 is the only number which appears in a single pair twice. Until this point, the values on the left side of the pair have been increasing, and the values on the right side have been decreasing. With 6, they've *met in the middle*, and any pair generated after this will be redundant. Therefore, the **square root** of the number we're testing determines that threshold (even for numbers that are not square, such as 38).
 
 In other words: **we only need to test integers up to the square root** of the number we're testing. Any testing beyond that will be redundant. The code below builds upon our previous examples with this optimization:
 ```javascript
@@ -107,7 +107,7 @@ A further optimization we can make, without increasing the complexity too much, 
 * **4:** the number is even, so it is not prime.
 * **5:** the number is odd and not a multiple of 3, **so it is possibly prime.**
 
-Based on the analysis above, we can rule out 4 of 6 cases with one single modulus operation; if the modulus yields anything other than 1 or 5, we immediately know the input is not prime. If it does yield 1 or 5, then we can move forward with the code we've previously written.
+Based on the analysis above, we can rule out 4 of 6 cases with one single modulus operation; if the modulus yields anything other than 1 or 5, we immediately know the input is not prime. If it does yield 1 or 5, then we can move forward with the code we've previously written. Note that this modulus of 6 check does not conclusively tell us if a number is prime, it only conclusively tells us if a number is not prime within those cases listed above, so we still need to use our logic we've written in previous sections in those cases where the modulus is 1 or 5:
 ```javascript
 function isPrime(num) {
     //handle special base cases
@@ -136,6 +136,7 @@ function isPrime(num) {
 If we want to see how many operations there are total, we need to handle the distinct cases:
 * 4/6 of the time, we will perform ``1`` operation.
 * 2/6 of the time, we will perform ``1/2 sqrt(n)`` operations.
+
 In the 'worst case' scenario, this will be no more efficient than the previous step, but for 2/3 of all possible inputs, the algorithm will return a response in roughly 1 operation.
 
 
@@ -149,7 +150,7 @@ for (let n=2; n<=limit; n++) {
     }
 }
 ```
-However, that approach would involve redundant calculations. For any non-prime integer ``a``, ``a x C``, where C is any integer, will also not be prime, so any call to *isPrime* on such a number will be wasted. We can make a more efficient implementation by taking a dynamic programming type approach. We'll create a set which, by default, will have the number 2 and all odd numbers <= limit. Then, we'll iteratively remove items by performing multiplications on smaller items.
+However, that approach would involve redundant calculations. For any non-prime integer ``a``, ``a x C``, where C is any integer, will also not be prime, so any call to *isPrime* on such a number will be wasted. We can make a more efficient implementation by taking a dynamic programming approach. We'll create a set which, by default, will have the number 2 and all odd numbers <= limit. Then, we'll iteratively remove items by performing multiplications on smaller items.
 ```javascript
 function buildPrimesSet(limit) {
     //start with a set of 2 + odd integers up to limit
@@ -174,6 +175,6 @@ function buildPrimesSet(limit) {
     return primeCandidatesSet;
 }
 ```
-This approach is not optimal for checking if any single number is prime, but is more optimal than using *isPrime* if we want to check mutiple numbers for primality within some number range. In other words, this implementation lets us do two things:
+This approach is not optimal for checking if any single number is prime, but is more optimal than using *isPrime* if we want to check mutiple numbers for primality within some number range. With this approach, we can do two things:
 1. Get a full list of prime numbers from 1 to some limit.
-2. Check if any number up to that limit is prime by checking if it exists within that Set.
+2. Check if any number up to that limit is prime by checking if it exists within that Set (instead of calling isPrime and performing those calculations).
