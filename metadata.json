@@ -1,15 +1,18 @@
 {
     "categories": [
-        "Algorithms"
+        "Algorithms",
+        "Interview Questions"
     ],
     "tags": [
         "is prime",
         "javascript is prime",
         "interview primes",
         "coding interview",
+        "javascript interview",
         "primality test",
         "prime test",
-        "algorithm prime"
+        "algorithm prime",
+        "software interview"
     ],
     "languages": [
         "JavaScript"
