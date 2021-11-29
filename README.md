@@ -1,5 +1,5 @@
 # js-is-prime
-An outline of how to determine if a number is prime with increasing levels of efficiency.  We'll cover some simple methods first, then move on to some intermediate level methods which are much more optimized.
+An outline of how to determine if a number is prime with increasing levels of efficiency.  We'll cover some simple methods first, then move on to some intermediate level methods which are much more optimized. Feel free to also take a look at our [Dev Page](https://bytethisstore.com/articles/pg/js-is-prime) on this topic, where we cover it in a bit more detail.
 
 ## Quick Refresher on Primes
 Though most people know what prime numbers are, it may be helpful to have a quick refresher. A **prime number** is a number which is not *divisible* by any integer other than itself and 1. The first few prime numbers are: ``[2, 3, 5, 7, 11, 13, 17]``. Any process which checks if any given number is prime or not is called a **primality test**. There are many ways to check if a number is prime, ranging from simple methods to highly sophisticated methods.
